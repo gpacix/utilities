@@ -157,3 +157,22 @@ def main(args):
 
 if __name__ == '__main__':
     main(sys.argv[1:])
+
+# TODO:
+# __ option to skip header and footer
+# __ add level-1, level-2, etc. classes to labels
+# __ option to start with everything expanded (maybe use onLoad()?)
+# __ option to start with top n levels expanded
+# __ option to speicfy the title/h1
+# __ option to specify indent string and separator
+# __ option for indent to be a regexp (count them? or just how wide entire string is?)
+# __ add ability to have leaves: just text that gets hidden or shown, not an outline line
+# __ add option for different comment character (currently just ";")
+# __ possibly add middle-of-the-line comments
+# __ make sure we deal with blank lines correctly
+# __ add option for auto-numbering the labels
+# __ add anchors for the labels
+# __ add url targets for the labels
+# __ add JavaScript to do org-mode type things: expand/contract, tab through 1-level, all levels, all text
+# __ think about how someone could *edit* an outline in HTML, via the browser
+# __ generate an outline live, from a file or API call

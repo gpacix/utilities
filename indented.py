@@ -5,7 +5,7 @@ import re
 import os
 import html
 
-DEBUG=True
+DEBUG=False
 
 def debug(*args):
     if DEBUG:
