@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import sys
 import indented
 
 DEBUG = False
@@ -46,6 +46,9 @@ function toggleSubtree(element) {
   .branch.expanded::before { /* Change to "-" when expanded */
       content: "▿ ";
   }
+  .label::before { /* Add space */
+      content: "   ";
+  }
 </style>
 </head>
 <body>
@@ -77,6 +80,12 @@ def is_tree(t):
                 return False
     return True
 
+def is_forest(maybe_forest):
+    for t in maybe_forest:
+        if not is_tree(t):
+            return False
+    return True
+
 def get_label(tree):
     if type(tree) == type(''):
         return tree
@@ -105,6 +114,7 @@ def emit_html(tree, level=0):
     #   output this tree's root label, wrapped in a branch div
     #   output the children wrapped in a subtree div
     label = get_label(tree)
+    debug('emit_html looking at label:', label)
     if DEBUG:
         label = ('[%d]' % level) + label
     debug('label is', label)
@@ -126,16 +136,24 @@ def emit_html(tree, level=0):
 
 
 def main(args):
-    data = example_data
-    if not is_tree(data):
-        print('not a tree!')
+    if '--example' in args:
+        data = example_data
+    else:
+        data = indented.read_indented_data_from_file(sys.stdin)
+
+    debug(data)
+    if not is_tree(data) and not is_forest(data):
+        print('ERROR: not a tree or a forest!')
         sys.exit(1)
-    output = emit_html(data)
-    debug(output)
+    if not is_forest(data):
+        # if it's just a tree, make it a forest:
+        data = [ data ]
+    output = []
+    for tree in data:
+        output += emit_html(tree)
     print(HEADER)
     print('\n'.join(output))
     print(FOOTER)
 
 if __name__ == '__main__':
-    import sys
     main(sys.argv[1:])
