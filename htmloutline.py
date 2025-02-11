@@ -143,7 +143,9 @@ def emit_html(tree, expand_to_level, level=0):
         
     return output
 
-settings = { 'expand_to_level': 1000000 }
+settings = { 'expand_to_level': 1000000,
+             'wrapper': True,
+             'use_example_data': False }
 
 def parse_args(args, settings):
     while args:
@@ -157,12 +159,14 @@ def parse_args(args, settings):
             elif levelstring == 'none':
                 levelstring = '0'
             settings['expand_to_level'] = int(levelstring)
+        elif a in ['--no-wrapper', '-w']:
+            settings['wrapper'] = False
         else:
             print('WARNING: ignoring unknown argument "%s"' % a, file=sys.stderr)
 
 def main(args):
     parse_args(args, settings)
-    if settings.get('use_example_data', False):
+    if settings['use_example_data']:
         data = example_data
     else:
         data = indented.read_indented_data_from_file(sys.stdin)
@@ -177,15 +181,17 @@ def main(args):
     output = []
     for tree in data:
         output += emit_html(tree, settings['expand_to_level'])
-    print(HEADER)
+    if settings['wrapper']:
+        print(HEADER)
     print('\n'.join(output))
-    print(FOOTER)
+    if settings['wrapper']:
+        print(FOOTER)
 
 if __name__ == '__main__':
     main(sys.argv[1:])
 
 # TODO:
-# __ option to skip header and footer
+# ++ option to skip header and footer
 # ++ add level-1, level-2, etc. classes to labels
 # ++ option to start with everything expanded (maybe use onLoad()?)
 # ++ option to start with top n levels expanded
