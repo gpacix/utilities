@@ -11,6 +11,9 @@ def debug(*args):
     if DEBUG:
         print(*args)
 
+
+COMMENT_CHARACTERS = ';#'
+
 def read_indented_data_from_fn(filename):
     return read_indented_data_from_file(open(filename))
 
@@ -19,9 +22,9 @@ def read_indented_data_from_file(infile):
 
 def read_indented_data_from_lines(lines):
     lines = [line.rstrip() for line in lines]
-    # get rid of blanks and commented lines: (; first non-blank is the comment character)
-    lines = [html.escape(line) for line in lines if line.lstrip() and line.lstrip()[0] != ';']
-
+    # get rid of blanks and commented lines:
+    lines = [html.escape(line) for line in lines
+             if line.lstrip() and line.lstrip()[0] not in COMMENT_CHARACTERS]
     return parse_indented_data(lines)
 
 def get_indent_and_label(s):
@@ -42,7 +45,6 @@ def guess_indent_string(lines):
         debug('org-mode')
         return '*', ' '
     # must be spaces or tabs, with no separator:
-    i = 0
     for line in lines:
         if line.lstrip() != line:
             break

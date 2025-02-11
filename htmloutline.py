@@ -245,7 +245,7 @@ if __name__ == '__main__':
 # ++ option to start with everything expanded (maybe use onLoad()?)
 # ++ option to start with top n levels expanded
 # ++ option to speicfy the title/h1
-# __ option to specify indent string and separator
+# __ option to specify (input) indent string and separator
 # __ option for indent to be a regexp (count them? or just how wide entire string is?)
 # __ add ability to have leaves: just text that gets hidden or shown, not an outline line
 # __ add option for different comment character (currently just ";")
@@ -255,7 +255,8 @@ if __name__ == '__main__':
 # __ add anchors for the labels
 # __ add url targets for the labels
 # ++ make it understand limited markdown: bold, italics
-# __ make it understand more markdown: links, maybe some other stuff
+# ++ make it understand markdown links
+# __ make it understand more markdown: maybe some other stuff
 # __ add JavaScript to do org-mode type things: expand/contract, tab through 1-level, all levels, all text
 # __ think about how someone could *edit* an outline in HTML, via the browser
 # __ generate an outline live, from a file or API call
