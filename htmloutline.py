@@ -79,7 +79,7 @@ def join_alternate(separators, strings):
     return r
 
 def markdown_faces(s):
-    if not '*' in s:
+    if '*' not in s:
         return s
     r = s[:]
     if '**' in r:
@@ -98,7 +98,7 @@ def markdown_link(s):
     # work backwards from the end:
     before, linktext = parts[0].rsplit('[', maxsplit=1)
     linkurl, after = parts[1].split(')', maxsplit=1)
-    return '%s<a href="%s">%s</a>%s'  % (before, linkurl, linktext, after)
+    return '%s<a href="%s">%s</a>%s' % (before, linkurl, linktext, after)
 
 def markdown_links(s):
     olds = ''
@@ -150,8 +150,8 @@ def get_children(tree):
         return []
     return tree[1]
 
-BRANCH_DIV = '<div class="branch level-%s%s" onclick="toggleSubtree(this)">%s</div>' #  expanded
-SUBTREE_DIV_START = '<div class="subtree"%s>' #  style="display:block"
+BRANCH_DIV = '<div class="branch level-%s%s" onclick="toggleSubtree(this)">%s</div>'  # expanded
+SUBTREE_DIV_START = '<div class="subtree"%s>'  # style="display:block"
 SUBTREE_DIV_END = '</div>'
 LABEL_DIV = '<div class="label level-%s">%s</div>'
 
@@ -186,7 +186,7 @@ def emit_html(tree, expand_to_level, level=0):
             debug('this child is', child)
             output += emit_html(child, expand_to_level, level + 1)
         output.append(pad + SUBTREE_DIV_END)
-        
+
     return output
 
 settings = { 'title': 'Outline',
