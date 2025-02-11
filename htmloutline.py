@@ -100,9 +100,16 @@ def markdown_link(s):
     linkurl, after = parts[1].split(')', maxsplit=1)
     return '%s<a href="%s">%s</a>%s'  % (before, linkurl, linktext, after)
 
+def markdown_links(s):
+    olds = ''
+    while not s == olds:
+        olds = s[:]
+        s = markdown_link(olds)
+    return s
+
 
 def markdown(s):
-    return markdown_faces(markdown_link(s))
+    return markdown_faces(markdown_links(s))
 
 def is_tree(t):
     if type(t) == type(''):
