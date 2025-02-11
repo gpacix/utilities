@@ -101,12 +101,12 @@ def get_children(tree):
         return []
     return tree[1]
 
-BRANCH_DIV = '<div class="branch" onclick="toggleSubtree(this)">%s</div>' #  expanded
-SUBTREE_DIV_START = '<div class="subtree">' #  style="block"
+BRANCH_DIV = '<div class="branch%s" onclick="toggleSubtree(this)">%s</div>' #  expanded
+SUBTREE_DIV_START = '<div class="subtree"%s>' #  style="display:block"
 SUBTREE_DIV_END = '</div>'
 LABEL_DIV = '<div class="label">%s</div>'
 
-def emit_html(tree, level=0):
+def emit_html(tree, expand_to_level, level=0):
     output = []
     # if no children:
     #   output this tree's root label
@@ -124,19 +124,40 @@ def emit_html(tree, level=0):
         output.append(pad + LABEL_DIV % label)
     else:
         debug('has children')
-        output.append(pad + BRANCH_DIV % label)
-        output.append(pad + SUBTREE_DIV_START)
+        branch_expansion, subtree_expansion = '', ''
+        if (level+1) <= settings['expand_to_level']:
+            branch_expansion = ' expanded'
+            subtree_expansion = ' style="display:block"'
+        output.append(pad + BRANCH_DIV % (branch_expansion, label))
+        output.append(pad + SUBTREE_DIV_START % subtree_expansion)
         children = get_children(tree)
         for child in children:
             debug('this child is', child)
-            output += emit_html(child, level + 1)
+            output += emit_html(child, expand_to_level, level + 1)
         output.append(pad + SUBTREE_DIV_END)
         
     return output
 
+settings = { 'expand_to_level': 1000000 }
+
+def parse_args(args, settings):
+    while args:
+        a = args.pop(0)
+        if a == '--example':
+            settings['use_example_data'] = True
+        elif a in ['--expand', '-x']:
+            levelstring = args.pop(0)
+            if levelstring == 'all':
+                levelstring = '1000000'
+            elif levelstring == 'none':
+                levelstring = '0'
+            settings['expand_to_level'] = int(levelstring)
+        else:
+            print('WARNING: ignoring unknown argument "%s"' % a, file=sys.stderr)
 
 def main(args):
-    if '--example' in args:
+    parse_args(args, settings)
+    if settings.get('use_example_data', False):
         data = example_data
     else:
         data = indented.read_indented_data_from_file(sys.stdin)
@@ -150,7 +171,7 @@ def main(args):
         data = [ data ]
     output = []
     for tree in data:
-        output += emit_html(tree)
+        output += emit_html(tree, settings['expand_to_level'])
     print(HEADER)
     print('\n'.join(output))
     print(FOOTER)
@@ -173,6 +194,7 @@ if __name__ == '__main__':
 # __ add option for auto-numbering the labels
 # __ add anchors for the labels
 # __ add url targets for the labels
+# __ make it understand limited markdown: bold, italics, links, maybe some other stuff
 # __ add JavaScript to do org-mode type things: expand/contract, tab through 1-level, all levels, all text
 # __ think about how someone could *edit* an outline in HTML, via the browser
 # __ generate an outline live, from a file or API call
