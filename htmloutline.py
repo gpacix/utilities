@@ -197,7 +197,10 @@ settings = { 'title': 'Outline',
 def parse_args(args, settings):
     while args:
         a = args.pop(0)
-        if a == '--example':
+        if a in ['--debug', '-D']:
+            global DEBUG
+            DEBUG = True
+        elif a == '--example':
             settings['use_example_data'] = True
         elif a in ['--expand', '-x']:
             levelstring = args.pop(0)
@@ -212,6 +215,7 @@ def parse_args(args, settings):
             settings['title'] = args.pop(0)
         else:
             print('WARNING: ignoring unknown argument "%s"' % a, file=sys.stderr)
+        debug(settings)
 
 def main(args):
     parse_args(args, settings)
