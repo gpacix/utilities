@@ -49,6 +49,10 @@ function toggleSubtree(element) {
   .label::before { /* Add space */
       content: "   ";
   }
+  .level-1 { font-size: 150%; }
+  .level-2 { font-size: 130%; }
+  .level-3 { font-size: 110%; }
+  .level-rest { font-size: 100%; }
 </style>
 </head>
 <body>
@@ -101,10 +105,10 @@ def get_children(tree):
         return []
     return tree[1]
 
-BRANCH_DIV = '<div class="branch%s" onclick="toggleSubtree(this)">%s</div>' #  expanded
+BRANCH_DIV = '<div class="branch level-%s%s" onclick="toggleSubtree(this)">%s</div>' #  expanded
 SUBTREE_DIV_START = '<div class="subtree"%s>' #  style="display:block"
 SUBTREE_DIV_END = '</div>'
-LABEL_DIV = '<div class="label">%s</div>'
+LABEL_DIV = '<div class="label level-%s">%s</div>'
 
 def emit_html(tree, expand_to_level, level=0):
     output = []
@@ -119,16 +123,17 @@ def emit_html(tree, expand_to_level, level=0):
         label = ('[%d]' % level) + label
     debug('label is', label)
     pad = ('  ' * level)
+    level_string = str(level+1)
     if not has_children(tree):
         debug('no children')
-        output.append(pad + LABEL_DIV % label)
+        output.append(pad + LABEL_DIV % (level_string, label))
     else:
         debug('has children')
         branch_expansion, subtree_expansion = '', ''
         if (level+1) <= settings['expand_to_level']:
             branch_expansion = ' expanded'
             subtree_expansion = ' style="display:block"'
-        output.append(pad + BRANCH_DIV % (branch_expansion, label))
+        output.append(pad + BRANCH_DIV % (level_string, branch_expansion, label))
         output.append(pad + SUBTREE_DIV_START % subtree_expansion)
         children = get_children(tree)
         for child in children:
@@ -181,9 +186,9 @@ if __name__ == '__main__':
 
 # TODO:
 # __ option to skip header and footer
-# __ add level-1, level-2, etc. classes to labels
-# __ option to start with everything expanded (maybe use onLoad()?)
-# __ option to start with top n levels expanded
+# ++ add level-1, level-2, etc. classes to labels
+# ++ option to start with everything expanded (maybe use onLoad()?)
+# ++ option to start with top n levels expanded
 # __ option to speicfy the title/h1
 # __ option to specify indent string and separator
 # __ option for indent to be a regexp (count them? or just how wide entire string is?)
