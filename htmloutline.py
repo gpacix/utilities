@@ -78,7 +78,7 @@ def join_alternate(separators, strings):
         r += strings.pop(0)
     return r
 
-def markdown(s):
+def markdown_faces(s):
     if not '*' in s:
         return s
     r = s[:]
@@ -88,6 +88,21 @@ def markdown(s):
         r = join_alternate(['<i>', '</i>'], r.split('*'))
     return r
 
+def markdown_link(s):
+    if '](' not in s:
+        return s
+    # may still not have a link in it:
+    parts = s.split('](', maxsplit=1)
+    if not ('[' in parts[0] and ')' in parts[1]):
+        return s
+    # work backwards from the end:
+    before, linktext = parts[0].rsplit('[', maxsplit=1)
+    linkurl, after = parts[1].split(')', maxsplit=1)
+    return '%s<a href="%s">%s</a>%s'  % (before, linkurl, linktext, after)
+
+
+def markdown(s):
+    return markdown_faces(markdown_link(s))
 
 def is_tree(t):
     if type(t) == type(''):
