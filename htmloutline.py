@@ -189,9 +189,12 @@ def emit_html(tree, expand_to_level, level=0):
 
     return output
 
+
 settings = { 'title': 'Outline',
              'expand_to_level': 1000000,
              'wrapper': True,
+             'indent_string': None,
+             'indent_separator': '',
              'use_example_data': False }
 
 def parse_args(args, settings):
@@ -213,6 +216,10 @@ def parse_args(args, settings):
             settings['wrapper'] = False
         elif a in ['--title', '-t']:
             settings['title'] = args.pop(0)
+        elif a in ['--indent-string', '-i']:
+            settings['indent_string'] = args.pop(0)
+        elif a in ['--indent-separator', '-s']:
+            settings['indent_separator'] = args.pop(0)
         else:
             print('WARNING: ignoring unknown argument "%s"' % a, file=sys.stderr)
         debug(settings)
@@ -222,6 +229,9 @@ def main(args):
     if settings['use_example_data']:
         data = example_data
     else:
+        indented.set_indent_string_and_separator(
+            settings['indent_string'],
+            settings['indent_separator'])
         data = indented.read_indented_data_from_file(sys.stdin)
 
     debug(data)

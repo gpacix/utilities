@@ -36,8 +36,16 @@ def get_indent_and_label(s):
         s = s[len(indent_separator):]
     return i, s
 
-# default to four spaces:
-indent_string = '    '
+
+indent_string = None
+indent_separator = ''
+
+
+def set_indent_string_and_separator(indstring, indsep):
+    global indent_string, indent_separator
+    indent_string = indstring
+    indent_separator = indsep
+
 
 def guess_indent_string(lines):
     # check for org-mode outline format:
@@ -51,12 +59,14 @@ def guess_indent_string(lines):
     guess = line[:-len(line.lstrip())]
     if guess:
         return guess, ''
-    return indent_string, ''
+    # default to four spaces:
+    return '    ', ''
 
 def parse_indented_data(lines):
     "This parses a forest, and returns a forest (a list of trees)"
     global indent_string, indent_separator
-    indent_string, indent_separator = guess_indent_string(lines)
+    if indent_string is None:
+        indent_string, indent_separator = guess_indent_string(lines)
     debug('indent string is "%s"' % indent_string)
     pos = 0
     children = []
