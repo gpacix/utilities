@@ -66,6 +66,33 @@ FOOTER = '''
 '''
 
 
+def markdown(s):
+    if not '*' in s:
+        return s
+    r = s[:]
+    if '**' in r:
+        boldsplit = r.split('**')
+        if (len(boldsplit) % 2) == 0:
+            boldsplit.append('')
+        r = boldsplit.pop(0)
+        next, after = '<b>', '</b>'
+        while boldsplit:
+            r += next
+            next, after = after, next
+            r += boldsplit.pop(0)
+    if '*' in r:
+        italicsplit = r.split('*')
+        if (len(italicsplit) % 2) == 0:
+            italicsplit.append('')
+        r = italicsplit.pop(0)
+        next, after = '<i>', '</i>'
+        while italicsplit:
+            r += next
+            next, after = after, next
+            r += italicsplit.pop(0)
+    return r
+
+
 def is_tree(t):
     if type(t) == type(''):
         return True
@@ -122,6 +149,7 @@ def emit_html(tree, expand_to_level, level=0):
     if DEBUG:
         label = ('[%d]' % level) + label
     debug('label is', label)
+    label = markdown(label)
     pad = ('  ' * level)
     level_string = str(level+1)
     if not has_children(tree):
@@ -198,7 +226,7 @@ if __name__ == '__main__':
 # ++ add level-1, level-2, etc. classes to labels
 # ++ option to start with everything expanded (maybe use onLoad()?)
 # ++ option to start with top n levels expanded
-# __ option to speicfy the title/h1
+# ++ option to speicfy the title/h1
 # __ option to specify indent string and separator
 # __ option for indent to be a regexp (count them? or just how wide entire string is?)
 # __ add ability to have leaves: just text that gets hidden or shown, not an outline line
@@ -208,7 +236,8 @@ if __name__ == '__main__':
 # __ add option for auto-numbering the labels
 # __ add anchors for the labels
 # __ add url targets for the labels
-# __ make it understand limited markdown: bold, italics, links, maybe some other stuff
+# ++ make it understand limited markdown: bold, italics
+# __ make it understand more markdown: links, maybe some other stuff
 # __ add JavaScript to do org-mode type things: expand/contract, tab through 1-level, all levels, all text
 # __ think about how someone could *edit* an outline in HTML, via the browser
 # __ generate an outline live, from a file or API call
