@@ -66,30 +66,26 @@ FOOTER = '''
 '''
 
 
+def join_alternate(separators, strings):
+    "Join strings using first the first separator, then the second, then the first; always pair them"
+    if (len(strings) % 2) == 0:
+        strings.append('')
+    r = strings.pop(0)
+    next, after = separators[:2]
+    while strings:
+        r += next
+        next, after = after, next
+        r += strings.pop(0)
+    return r
+
 def markdown(s):
     if not '*' in s:
         return s
     r = s[:]
     if '**' in r:
-        boldsplit = r.split('**')
-        if (len(boldsplit) % 2) == 0:
-            boldsplit.append('')
-        r = boldsplit.pop(0)
-        next, after = '<b>', '</b>'
-        while boldsplit:
-            r += next
-            next, after = after, next
-            r += boldsplit.pop(0)
+        r = join_alternate(['<b>', '</b>'], r.split('**'))
     if '*' in r:
-        italicsplit = r.split('*')
-        if (len(italicsplit) % 2) == 0:
-            italicsplit.append('')
-        r = italicsplit.pop(0)
-        next, after = '<i>', '</i>'
-        while italicsplit:
-            r += next
-            next, after = after, next
-            r += italicsplit.pop(0)
+        r = join_alternate(['<i>', '</i>'], r.split('*'))
     return r
 
 
