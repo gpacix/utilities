@@ -21,7 +21,7 @@ example_data = ['Outline',
 HEADER = '''<!DOCTYPE html>
 <html>
 <head>
-<title>Outline</title>
+<title>TITLE</title>
 <script>
 function toggleSubtree(element) {
   element.classList.toggle("expanded");
@@ -57,7 +57,7 @@ function toggleSubtree(element) {
 </head>
 <body>
 
-<h1>Outline</h1>
+<h1>TITLE</h1>
 '''
 
 FOOTER = '''
@@ -143,7 +143,8 @@ def emit_html(tree, expand_to_level, level=0):
         
     return output
 
-settings = { 'expand_to_level': 1000000,
+settings = { 'title': 'Outline',
+             'expand_to_level': 1000000,
              'wrapper': True,
              'use_example_data': False }
 
@@ -161,6 +162,8 @@ def parse_args(args, settings):
             settings['expand_to_level'] = int(levelstring)
         elif a in ['--no-wrapper', '-w']:
             settings['wrapper'] = False
+        elif a in ['--title', '-t']:
+            settings['title'] = args.pop(0)
         else:
             print('WARNING: ignoring unknown argument "%s"' % a, file=sys.stderr)
 
@@ -182,7 +185,7 @@ def main(args):
     for tree in data:
         output += emit_html(tree, settings['expand_to_level'])
     if settings['wrapper']:
-        print(HEADER)
+        print(HEADER.replace("TITLE", settings['title']))
     print('\n'.join(output))
     if settings['wrapper']:
         print(FOOTER)
